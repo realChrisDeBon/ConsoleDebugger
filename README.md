@@ -1,8 +1,7 @@
 
+![ConsoleDebugger](https://github.com/realChrisDeBon/ConsoleDebugger/assets/97779307/8defa9e4-355e-4ab3-a175-952ca8efed99)
 
 <h1 align="center">
-<img src="https://github.com/realChrisDeBon/ConsoleDebugger/assets/97779307/b4e98abb-75bd-41f1-ad27-2cbac025295f" width="175" height="175" alt="ConsoleDebugger logo">
-  
    ConsoleDebugger
 </h1>
 
