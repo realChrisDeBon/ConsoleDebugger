@@ -2,7 +2,7 @@
 <package xmlns="http://schemas.microsoft.com/packaging/2012/06/nuspec.xsd">
   <metadata>
     <id>ConsoleDebugger</id>
-    <version>1.0.0</version>
+    <version>1.0.1</version>
     <title>ConsoleDebugger</title>
     <authors>ConsoleDebugger Team</authors>
     <icon>ConsoleDebugger.png</icon>
@@ -20,6 +20,7 @@
   </metadata>
   <files>
     <file src="C:\Users\chris\OneDrive\Desktop\Work (DataAnnotation)\Work Repos\AAAAAAAAAAA\ConsoleDebugger\ConsoleDebugger\bin\Debug\net8.0\ConsoleDebugger.dll" target="lib\net8.0\ConsoleDebugger.dll" />
-    <file src="C:\Users\chris\OneDrive\Desktop\Console Debugger\ConsoleDebugger.png" target="\ConsoleDebugger.png" />
+	<file src="C:\path\to\your\project\bin\Debug\net8.0\ConsoleDebugger.xml" target="lib\net8.0\ConsoleDebugger.xml" />
+	<file src="C:\Users\chris\OneDrive\Desktop\Console Debugger\ConsoleDebugger.png" target="\ConsoleDebugger.png" />
   </files>
 </package>
