@@ -1,10 +1,10 @@
 
 <h1 align="center">
-
-  ![ConsoleDebugger](https://github.com/realChrisDeBon/ConsoleDebugger/assets/97779307/b4e98abb-75bd-41f1-ad27-2cbac025295f)
-
+<img src="https://github.com/realChrisDeBon/ConsoleDebugger/assets/97779307/b4e98abb-75bd-41f1-ad27-2cbac025295f" width="175" height="175" alt="ConsoleDebugger logo">
+  
    ConsoleDebugger
 </h1>
+
 ## Overview
 
 ConsoleDebugger is a lightweight utility designed for console applications that involve multiple asynchronous operations, background processes, and network activities. It provides functionalities to log debug messages, play audible beeps, and dynamically track float variables with a contnious tone, making it useful for debugging and monitoring applications with complex behavior. ConsoleDebugger is ideal for console applications where you have multiple asynchronous methods, background processes, or network operations and need a way to keep track of multiple moving parts. 
