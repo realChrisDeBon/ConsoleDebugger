@@ -353,7 +353,6 @@ namespace ConsoleDebugger
                                     while (waveOut.PlaybackState == PlaybackState.Playing)
                                         {
                                         System.Threading.Thread.Sleep(1);
-                                        Console.WriteLine(*_targetValue);
                                         }
 
                                     // Clean up
