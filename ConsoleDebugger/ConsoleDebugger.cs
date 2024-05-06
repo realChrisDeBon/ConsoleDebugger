@@ -202,7 +202,7 @@ namespace ConsoleDebugger
                         using (var fileWriter = new StreamWriter("log", true))
                             {
                             string tolog = "";
-                            string tag = entrytag();
+                            string tag = entrytag().ToString();
                             if (LoggingConfiguration.IncludeTimestamp == true)
                                 {
                                 tolog += $"{entry.TimeCreated.ToString()}";
@@ -493,19 +493,12 @@ namespace ConsoleDebugger
         private readonly static char DoubleExlamError = '\u203C';
         private readonly static char Asteriks = '*';
 
-        private static string ErrorMessage()
-            {
-            return WarningTriangle + "  " + MessageTypeDict[MessageType.Critical] + "  " + WarningTriangle;
-            }
-        private static string WarningMessage()
-            {
-            return DoubleExlamError + " " + MessageTypeDict[MessageType.Warning] + " " + DoubleExlamError;
-            }
-        private static string GeneralMessage()
-            {
-            return Asteriks + MessageTypeDict[MessageType.General] + Asteriks;
+        private static string ErrorMessage = WarningTriangle + "  " + MessageTypeDict[MessageType.Critical] + "  " + WarningTriangle;
 
-            }
+        private static string WarningMessage = DoubleExlamError + " " + MessageTypeDict[MessageType.Warning] + " " + DoubleExlamError;
+
+        private static string GeneralMessage = Asteriks + MessageTypeDict[MessageType.General] + Asteriks;
+
         #endregion
 
         }
