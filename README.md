@@ -20,6 +20,12 @@ Install-Package NAudio -Version 2.2.1
 
 3. Include `using static ConsoleDebugger.ConsoleDebugger;` at the top of your C# files where you want to use ConsoleDebugger functionalities.
 
+## Demonstration (Audio)
+
+
+https://github.com/realChrisDeBon/ConsoleDebugger/assets/97779307/d46c0960-5f72-4e81-848b-5b458c8f59f2
+
+
 ## Usage
 
 ### Logging Debug Messages
