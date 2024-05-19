@@ -12,13 +12,13 @@ ConsoleDebugger is a lightweight utility designed for console applications that 
 
 To use ConsoleDebugger in your C# console application, follow these steps:
 
-1. Install the NAudio package via NuGet Package Manager:
+1. Install the ConsoleDebugger package via NuGet Package Manager:
 ```dotnet
 dotnet add package ConsoleDebugger --version 1.0.3
 ```
 2. Copy the `ConsoleDebugger.cs` file into your project directory.
 
-3. Include `using static ConsoleDebugger.ConsoleDebugger;` at the top of your C# files where you want to use ConsoleDebugger functionalities.
+3. Include `using static ConsoleDebugger.ConsoleDebugger;` or optionally for a more functional approach `using static ConsoleDebugger.ConsoleDebugger;` at the top of your C# files where you want to use ConsoleDebugger functionalities.
 
 ## Demonstration (Audio)
 
