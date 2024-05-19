@@ -14,7 +14,7 @@ To use ConsoleDebugger in your C# console application, follow these steps:
 
 1. Install the NAudio package via NuGet Package Manager:
 ```dotnet
-Install-Package NAudio -Version 2.2.1
+dotnet add package ConsoleDebugger --version 1.0.3
 ```
 2. Copy the `ConsoleDebugger.cs` file into your project directory.
 
