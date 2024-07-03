@@ -34,11 +34,11 @@ You can log debug messages with different colors and message types using the `De
 ```csharp
 Result result = SomeNetworkFunction() // example funtion
 ConsoleDebugger.DebugMessage("We started the network function.");
-if(result = Good){
+if(result == Good){
    //denote network results in blue
    ConsoleDebugger.DebugMessage($"Here's the results {result}", ConsoleColor.Blue);
 } else {
-   ConsoleDebugger.DebugMessage("Critical error occurred: {result.Message}", MessageType.Critical);
+   ConsoleDebugger.DebugMessage($"Critical error occurred: {result.Message}", MessageType.Critical);
 }
 ```
 
