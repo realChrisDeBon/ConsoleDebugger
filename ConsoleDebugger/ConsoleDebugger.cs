@@ -2,6 +2,7 @@
 using NAudio.Wave.SampleProviders;
 using System.Collections.Concurrent;
 using System.Runtime.InteropServices;
+using System.Text;
 
 namespace ConsoleDebugger
     {
@@ -19,7 +20,13 @@ namespace ConsoleDebugger
             private static CancellationToken cancellationToken = cancelTask.Token;
             public static LogStyle LoggerStyle = LogStyle.CSVFormat;
             public static bool IncludeTimestamp = true;
+            public static bool IncludeCategory = true;
+            public static bool EmitConsoleMessages = true;
             private static bool logrunning = false;
+            /// <summary>
+            /// Determines whether the logger is currently active.
+            /// Setting this property to true will automcatically start the logger, while setting it to false will stop it.
+            /// </summary>
             public static bool LoggerActive
                 {
                 get => logrunning;
@@ -45,6 +52,55 @@ namespace ConsoleDebugger
         private static ConcurrentQueue<DebugMessageEntry> _messageQueue = new ConcurrentQueue<DebugMessageEntry>();
         private static ConcurrentQueue<BeepWrapper> _beepQueue = new ConcurrentQueue<BeepWrapper>();
         private static ConcurrentQueue<DebugMessageEntry> _fileLogQueue = new ConcurrentQueue<DebugMessageEntry>();
+
+        /// <summary>
+        /// A dictionary of logging categories and their associated boolean values, indicating whether they are currently active.
+        /// When passing DebugMessages, you can specify a category to filter messages based on the active logging categories.
+        /// </summary>
+        private static Dictionary<string, bool> LoggingCategories = new Dictionary<string, bool>()
+        {
+            { "General", true }
+        };
+        /// <summary>
+        /// Adds a new logging category to the dictionary of logging categories.
+        /// By default, the category will be active.
+        /// </summary>
+        /// <param name="category">The category that will be added.</param>
+        public static void AddLoggingCategory(LoggingCategory category)
+        {
+            LoggingCategories.Add(category.CategoryName, true);
+        }
+        /// <summary>
+        /// Removes a logging category from the dictionary of logging categories.
+        /// </summary>
+        /// <param name="category">The category that will be removed.</param>
+        public static void RemoveLoggingCategory(LoggingCategory category)
+        {
+            LoggingCategories.Remove(category.CategoryName);
+        }
+        /// <summary>
+        /// Activates a logging category, allowing messages with this category to be processed.
+        /// </summary>
+        /// <param name="category">The category that will activated for logging.</param>
+        public static void ActivateLoggingCategory(LoggingCategory category)
+        {
+            LoggingCategories[category.CategoryName] = true;
+        }
+        /// <summary>
+        /// Deactivates a logging category, preventing messages with this category from being processed to the console.
+        /// </summary>
+        /// <param name="category">The category that will be deactivated.</param>
+        public static void DeactivateLoggingCategory(LoggingCategory category)
+        {
+            LoggingCategories[category.CategoryName] = false;
+        }
+        /// <summary>
+        /// Checks whether a logging category is currently active.
+        /// </summary>
+        public static bool LoggingCategoryActive(LoggingCategory category)
+        {
+            return LoggingCategories[category.CategoryName];
+        }
 
         private static bool _isRunning = true;
 
@@ -115,11 +171,14 @@ namespace ConsoleDebugger
                 {
                 if (_messageQueue.TryDequeue(out DebugMessageEntry entry))
                     {
-                    // Set colors if provided
                     if (LoggingConfiguration.LoggerActive == true)
                         {
                         _fileLogQueue.Enqueue(entry);
                         }
+                    if ((LoggingCategories[entry.Category] == false) || (LoggingConfiguration.EmitConsoleMessages == false))
+                    {
+                        continue;
+                    }
                     if (LoggingConfiguration.IncludeTimestamp == true)
                         {
                         Console.Write(entry.TimeCreated + ": ");
@@ -139,7 +198,7 @@ namespace ConsoleDebugger
                             case MessageType.Warning:
                                 Console.BackgroundColor = ConsoleColor.DarkYellow;
                                 Console.ForegroundColor = ConsoleColor.White;
-                                Console.Write(ErrorMessage);
+                                Console.Write(WarningMessage);
                                 Console.ResetColor();
                                 Console.WriteLine(' ' + entry.Message);
                                 MessageBeep(0x00000030);
@@ -147,7 +206,7 @@ namespace ConsoleDebugger
                             case MessageType.Critical:
                                 Console.BackgroundColor = ConsoleColor.DarkRed;
                                 Console.ForegroundColor = ConsoleColor.White;
-                                Console.Write(WarningMessage);
+                                Console.Write(ErrorMessage);
                                 Console.ResetColor();
                                 Console.WriteLine(' ' + entry.Message);
                                 MessageBeep(0x00000010);
@@ -191,30 +250,62 @@ namespace ConsoleDebugger
             LoggingConfiguration.LoggerActive = false;
             }
 
+        private static string GetCSVHeader()
+        {
+            StringBuilder header = new StringBuilder();
+            if(LoggingConfiguration.IncludeTimestamp == true)
+            {
+                header.Append("Timestamp,");
+            }
+            header.Append("Tag,");
+            if (LoggingConfiguration.IncludeCategory == true)
+            {
+                header.Append("Category,");
+            }
+            header.Append("Message");
+            return header.ToString();
+        }
         private static async Task ProcessLogQueue(CancellationToken cancelToken)
             {
-            while (!cancelToken.IsCancellationRequested)
+            string logname = LoggingConfiguration.LoggerStyle == LogStyle.CSVFormat ? "log.csv" : "log.txt";
+            if (LoggingConfiguration.LoggerStyle == LogStyle.CSVFormat)
+            {
+                using(var fw = new StreamWriter(logname, true))
                 {
+                    await fw.WriteLineAsync(GetCSVHeader());
+                }
+            }
+            while (!cancelToken.IsCancellationRequested)
+                {                
                 if (_fileLogQueue.TryDequeue(out DebugMessageEntry entry))
-                    {
+                    {                    
                     try
-                        {
-                        using (var fileWriter = new StreamWriter("log", true))
+                    {
+                        using (var fileWriter = new StreamWriter(logname, true))
                             {
                             string tolog = "";
                             string tag = entrytag().ToString();
                             if (LoggingConfiguration.IncludeTimestamp == true)
                                 {
                                 tolog += $"{entry.TimeCreated.ToString()}";
+
                                 if (LoggingConfiguration.LoggerStyle == LogStyle.CSVFormat)
                                     {
-                                    tolog += $",{tag},{entry.Message}";
+                                    if(tolog != "")
+                                    {
+                                        tolog += ",";
+                                    }
+                                    tolog += LoggingConfiguration.IncludeCategory ? $"{tag},({entry.Category}),{entry.Message}" : $"{tag},{entry.Message}";
                                     }
                                 else
                                     {
-                                    tolog += $": {tag} {entry.Message}";
+                                    if(tolog != "")
+                                    {
+                                        tolog += ": ";
                                     }
+                                    tolog += LoggingConfiguration.IncludeCategory ? $"{tag} ({entry.Category}) {entry.Message}" : $"{tag} {entry.Message}";
                                 }
+                            }
                             await fileWriter.WriteLineAsync(tolog);
 
                             // nested helper
@@ -236,27 +327,28 @@ namespace ConsoleDebugger
         /// Enqueues a basic debug message to the processing queue.
         /// </summary>
         /// <param name="message">The text content of the debug message.</param>
-        public static void DebugMessage(string message)
+        /// <param name="category">The logging category this message falls under.</param>
+        public static void DebugMessage(string message, LoggingCategory category = default)
             {
-            _messageQueue.Enqueue(new DebugMessageEntry(message));
+            _messageQueue.Enqueue(new DebugMessageEntry(message, category: category));
             }
         /// <summary>
         /// Enqueues a debug message with a specified foreground color.
         /// </summary>
         /// <param name="message">The text content of the debug message.</param>
         /// <param name="color">The desired foreground color for the message.</param>
-        public static void DebugMessage(string message, ConsoleColor color)
+        public static void DebugMessage(string message, ConsoleColor color, LoggingCategory category = default)
             {
-            _messageQueue.Enqueue(new DebugMessageEntry(message, color));
+            _messageQueue.Enqueue(new DebugMessageEntry(message, color, category: category));
             }
         /// <summary>
         /// Enqueues a debug message with an associated message type.
         /// </summary>
         /// <param name="message">The text content of the debug message.</param>
         /// <param name="type">The type of message (General, Warning, Critical) influencing its presentation.</param>
-        public static void DebugMessage(string message, MessageType type)
+        public static void DebugMessage(string message, MessageType type, LoggingCategory category = default)
             {
-            _messageQueue.Enqueue(new DebugMessageEntry(message, type: type));
+            _messageQueue.Enqueue(new DebugMessageEntry(message, type: type, category: category));
             }
         // DebugBeep function:
 
@@ -438,19 +530,29 @@ namespace ConsoleDebugger
                 Duration = duration;
                 }
             }
+        public record struct LoggingCategory
+        {
+            public string CategoryName { get; }
+            public LoggingCategory(string name)
+            {
+                CategoryName = name;
+            }
+        }
         private record struct DebugMessageEntry
             {
             public string Message { get; }
             public ConsoleColor? Color { get; }
             public MessageType? Type { get; }
+            public string Category { get; }
             public DateTime TimeCreated { get; }
-            public DebugMessageEntry(string message, ConsoleColor? color = null, MessageType? type = null)
+            public DebugMessageEntry(string message, ConsoleColor? color = null, MessageType? type = null, LoggingCategory? category = null)
                 {
                 Message = message;
                 Color = color;
                 Type = type;
                 TimeCreated = DateTime.Now;
-                }
+                Category = category?.CategoryName ?? "General";
+            }
             }
         #endregion
 
