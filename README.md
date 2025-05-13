@@ -4,101 +4,141 @@
    ConsoleDebugger
 </h1>
 
+<h3 align="center">
+Quick, simple, easy logging and debugging.
+</h3>
+
 ## Overview
 
-ConsoleDebugger is a lightweight utility designed for console applications that involve multiple asynchronous operations, background processes, and network activities. It provides functionalities to log debug messages, play audible beeps, and dynamically track float variables with a contnious tone, making it useful for debugging and monitoring applications with complex behavior. ConsoleDebugger is ideal for console applications where you have multiple asynchronous methods, background processes, or network operations and need a way to keep track of multiple moving parts. 
+ConsoleDebugger is a lightweight utility for console applications, providing robust logging and debug message management. It is ideal for applications with multiple asynchronous methods, background processes, or network operations. As of v1.0.8, advanced features such as audible beeps and float tracking are now available as separate extension packages, reducing the core package size and dependencies for users who only need basic logging.
 
 ## Installation
 
-To use ConsoleDebugger in your C# console application, follow these steps:
+To use ConsoleDebugger in your C# console application:
 
-1. Install the ConsoleDebugger package via NuGet Package Manager:
+1. Install the core ConsoleDebugger package via NuGet:
 ```dotnet
-dotnet add package ConsoleDebugger --version 1.0.3
+dotnet add package ConsoleDebugger --version 1.0.8
 ```
-2. Copy the `ConsoleDebugger.cs` file into your project directory.
+2. Add the following using directive in your C# files:
+```csharp
+using ConsoleDebugger.ConsoleDebugger;
+```
+Or, for a more functional approach:
+```csharp
+using static ConsoleDebugger.ConsoleDebugger;
+```
 
-3. Include `using ConsoleDebugger.ConsoleDebugger;` or optionally for a more functional approach `using static ConsoleDebugger.ConsoleDebugger;` at the top of your C# files where you want to use ConsoleDebugger functionalities.
+### Optional Extensions
 
-## Demonstration (Audio)
+- **Audible Beeps:**  
+  Install `ConsoleDebugger.Beeps` for beep/tone support:
+  ```dotnet
+  dotnet add package ConsoleDebugger.Beeps --version 1.0.8
+  ```
+  ```csharp
+  using ConsoleDebugger.Beeps;
+  ```
 
-
-https://github.com/realChrisDeBon/ConsoleDebugger/assets/97779307/d46c0960-5f72-4e81-848b-5b458c8f59f2
-
+- **Float Tracking:**  
+  Install `ConsoleDebugger.FloatTracker` for auditory float tracking:
+  ```dotnet
+  dotnet add package ConsoleDebugger.FloatTracker --version 1.0.8
+  ```
+  ```csharp
+  using ConsoleDebugger.FloatTracker;
+  ```
 
 ## Usage
 
 ### Logging Debug Messages
 
-You can log debug messages with different colors and message types using the `DebugMessage` function:
+Log debug messages with different colors and message types:
 ```csharp
-Result result = SomeNetworkFunction() // example funtion
+Result result = SomeNetworkFunction(); // example function
 ConsoleDebugger.DebugMessage("We started the network function.");
 if(result == Good){
-   //denote network results in blue
-   ConsoleDebugger.DebugMessage($"Here's the results {result}", ConsoleColor.Blue);
+   ConsoleDebugger.DebugMessage($"Here's the result {result.ToString()}", ConsoleColor.Blue);
 } else {
    ConsoleDebugger.DebugMessage($"Critical error occurred: {result.Message}", MessageType.Critical);
 }
 ```
 
+#### Logging Categories
+
+You can define and control logging categories:
+```csharp
+var netCategory = new LoggingCategory("Network");
+ConsoleDebugger.AddLoggingCategory(netCategory);
+ConsoleDebugger.DebugMessage("Network started", netCategory);
+```
+
+You can also control which logging categories are shown in the console output. By default, all categories are considered enabled. Use `ActivateLoggingCategory(category)` to enable console output for a category, or `DeactivateLoggingCategory(category)` to suppress it so the category no longer outputs to the console. 
+
+**Note:** Logging categories are always included in the file log if file logging is enabled, regardless of their console output status.
+
 ### Optional File Logging
 
-You can enable file logging for debug messages by calling the `StartLogging` function:
+You can log messages to a file in either `.txt` or `.csv` format. By default, logs include the message, but you can configure additional options such as including timestamps, logging categories, and message types. The output format and included fields are controlled via the `LoggingConfiguration` class.
+
+- **.txt format:** Plain text log entries, optionally with timestamp, category, and message type.
+- **.csv format:** Comma-separated values, suitable for importing into spreadsheets or analysis tools. Each field (timestamp, category, type, message) appears as a column if enabled.
+
+Enable or disable file logging:
 ```csharp
 ConsoleDebugger.StartLogging();
-```
-To stop file logging, use the `StopLogging` function:
-```csharp
+// ... your code ...
 ConsoleDebugger.StopLogging();
 ```
-File logging is configured in the `LoggingConfiguration` class, where you can set options such as log style (CSV or plain text) and timestamp inclusion.
-
-**Note:** Ensure proper error handling and file management practices when using file logging to avoid potential issues with file access and resources.
-
-### Playing Audible Beeps
-
-You can enqueue requests to play audible beeps with specific pitches and durations using the `DebugBeep` function:
-
+Configure logging style and options via the `LoggingConfiguration` class, for example:
 ```csharp
+var config = new LoggingConfiguration {
+    IncludeTimestamp = true,
+    IncludeCategory = true,
+    IncludeMessageType = true,
+    LogFormat = LogFormat.Csv // or LogFormat.Txt
+};
+ConsoleDebugger.SetLoggingConfiguration(config);
+```
+
+### Audible Beeps (Extension)
+
+To use beeps, ensure you have installed the `ConsoleDebugger.Beeps` package and initialized beeps:
+```csharp
+ConsoleDebugger.InitializeBeeps();
 ConsoleDebugger.DebugBeep(TonePitch.Do, ToneLength.Short);
 ConsoleDebugger.DebugBeep(TonePitch.Re, ToneLength.Short);
-ConsoleDebugger.DebugBeep(TonePitch.Mi, ToneLength.Medium);
-ConsoleDebugger.DebugBeep(TonePitch.Fa, ToneLength.Medium);
-ConsoleDebugger.DebugBeep(TonePitch.Sol, ToneLength.Long);
 ```
 
-### Tracking Float Variables
+### Tracking Float Variables (Extension)
 
-You can start tracking float variables dynamically and generate tones based on their values using the `StartTrackingFloat` function:
-
+To use float tracking, ensure you have installed the `ConsoleDebugger.FloatTracker` package and initialized float tracking:
 ```csharp
+ConsoleDebugger.InitializeFloatTracking();
 float valueToTrack = 0.0f;
-FloatSynthesizer synthesizer = ConsoleDebugger.StartTrackingFloat(ref valueToTrack, 0.0f, 100.0f);
+var synthesizer = ConsoleDebugger.StartTrackingFloat(ref valueToTrack, 0.0f, 100.0f);
 ```
-or 
-```csharp
-float valueToTrack = 0.0f;
-StartTrackingFloat(ref valueToTrack, 0.0f, 100.0f);
-```
-As `valueToTrack` fluctuates, it will become more audible the closer to the maximum value that it gets. The closer it gets to the minimum value, the less audible and more quiet it will become. 
-This can be useful in scenarios where you may be receiving large quantities of represenative data within a certain range, or may be preforming algorithmic operations, and need some way to better understand how the values are being effected.
-## Functions Details
+As `valueToTrack` changes, an auditory tone will represent its value within the specified range.
 
-### `DebugMessage(string message)`
-Enqueues a basic debug message to the processing queue.
+## Function Details
 
-### `DebugMessage(string message, ConsoleColor color)`
-Enqueues a debug message with a specified foreground color.
+### Core
 
-### `DebugMessage(string message, MessageType type)`
-Enqueues a debug message with an associated message type (General, Warning, Critical).
+- `DebugMessage(string message, LoggingCategory category = default)`
+- `DebugMessage(string message, ConsoleColor color, LoggingCategory category = default)`
+- `DebugMessage(string message, MessageType type, LoggingCategory category = default)`
+- `StartLogging()`, `StopLogging()`
+- Logging category management: `AddLoggingCategory`, `RemoveLoggingCategory`, `ActivateLoggingCategory`, `DeactivateLoggingCategory`, `LoggingCategoryActive`
 
-### `DebugBeep(TonePitch pitch, ToneLength duration)`
-Enqueues a request to play an audible beep with a specified pitch and duration.
+### Beeps Extension
 
-### `StartTrackingFloat(ref float target, float minrange, float maxrange) : FloatSynthesizer`
-Begins monitoring a float variable, generating a tone whose pitch changes dynamically based on the variable's value within a specified range.
+- `DebugBeep(TonePitch pitch, ToneLength duration)`
+- `InitializeBeeps()`
+
+### Float Tracker Extension
+
+- `StartTrackingFloat(ref float target, float minrange, float maxrange) : FloatSynthesizer`
+- `InitializeFloatTracking()`
 
 ## License
 
