@@ -1,0 +1,23 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+	  <PackageIcon>ConsoleDebugger.png</PackageIcon>
+	  <PackageTags>debugging, logging, console, audio, tone, synthesis, utility</PackageTags>
+	  <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
+	  <Version>1.0.8</Version>
+	  <Description>Extension of ConsoleDebugger. Introduces simply formatted beep messages using Do, Re, Mi, Sol, ect. with different pre-defined tone lengths.</Description>
+
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="NAudio" Version="2.2.1" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\ConsoleDebugger\ConsoleDebugger.csproj" />
+  </ItemGroup>
+
+</Project>

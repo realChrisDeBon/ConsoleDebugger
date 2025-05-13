@@ -1,0 +1,24 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+    <AllowUnsafeBlocks>True</AllowUnsafeBlocks>
+	  <PackageIcon>ConsoleDebugger.png</PackageIcon>
+	  <PackageTags>debugging, logging, console, audio, tone, synthesis, utility</PackageTags>
+	  <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
+	  <Version>1.0.8</Version>
+	  <Description>Extension of ConsoleDebugger. Introduces auditory float tracking. Pass any float variable in your application, and a min/max range to hear an auditory tone representing the value in range as a percentage. Can be useful for developing where I/O is dealing with large quantities of information or preforming several rapid operations - good for mental visualization.</Description>
+
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="NAudio" Version="2.2.1" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\ConsoleDebugger\ConsoleDebugger.csproj" />
+  </ItemGroup>
+
+</Project>

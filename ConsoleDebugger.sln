@@ -5,6 +5,10 @@ VisualStudioVersion = 17.9.34723.18
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ConsoleDebugger", "ConsoleDebugger\ConsoleDebugger.csproj", "{EF8C22BE-A33C-4F71-AAA6-16E0219F2403}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ConsoleDebugger.FloatTracker", "ConsoleDebugger.FloatTracker\ConsoleDebugger.FloatTracker.csproj", "{BBED40AF-CB83-41B4-A158-F94B982F819C}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ConsoleDebugger.Beeps", "ConsoleDebugger.Beeps\ConsoleDebugger.Beeps.csproj", "{5D731BBE-9F17-4024-BD9A-7607D1E40BBA}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -15,6 +19,14 @@ Global
 		{EF8C22BE-A33C-4F71-AAA6-16E0219F2403}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{EF8C22BE-A33C-4F71-AAA6-16E0219F2403}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{EF8C22BE-A33C-4F71-AAA6-16E0219F2403}.Release|Any CPU.Build.0 = Release|Any CPU
+		{BBED40AF-CB83-41B4-A158-F94B982F819C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{BBED40AF-CB83-41B4-A158-F94B982F819C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{BBED40AF-CB83-41B4-A158-F94B982F819C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{BBED40AF-CB83-41B4-A158-F94B982F819C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5D731BBE-9F17-4024-BD9A-7607D1E40BBA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5D731BBE-9F17-4024-BD9A-7607D1E40BBA}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5D731BBE-9F17-4024-BD9A-7607D1E40BBA}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5D731BBE-9F17-4024-BD9A-7607D1E40BBA}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
